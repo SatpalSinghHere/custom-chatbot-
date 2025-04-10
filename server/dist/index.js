@@ -13,10 +13,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv/config");
+let cors = require('cors');
 const openai_1 = __importDefault(require("openai"));
 const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)();
-const PORT = 3000;
+const PORT = 3001;
+app.use(cors({
+    origin: 'http://localhost:3000', // Your Next.js dev server
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 const openai = new openai_1.default({
     baseURL: "https://openrouter.ai/api/v1",
     apiKey: process.env.OPENROUTER_API_KEY,
@@ -119,18 +125,6 @@ Thank you for visiting ABC Lighting Corp! Could you please provide your contact 
 
 
 `;
-// async function main() {
-//     const completion = await openai.chat.completions.create({
-//         model: "nvidia/llama-3.1-nemotron-nano-8b-v1:free",
-//         messages: [
-//             {
-//                 "role": "user",
-//                 "content": "What is the meaning of life?"
-//             }
-//         ],
-//     });
-//     console.log(completion.choices[0].message);
-// }
 let messages = [
     {
         "role": "system",
@@ -150,6 +144,6 @@ app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     });
     messages.push({ 'role': 'assistent', 'content': completion.choices[0].message.content });
     console.log(messages);
-    res.send(completion.choices[0].message);
+    res.send({ 'role': 'assistent', 'content': completion.choices[0].message.content });
 }));
 app.listen(PORT, () => { console.log(`Server started on port ${PORT}`); });

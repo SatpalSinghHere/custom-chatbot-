@@ -1,10 +1,17 @@
 import 'dotenv/config'
+let cors = require('cors')
 import OpenAI from 'openai';
 
 import express from 'express'
 import { ChatCompletionCreateParams, ChatCompletionMessageParam } from 'openai/resources/chat';
 const app = express()
-const PORT = 3000
+const PORT = 3001
+
+app.use(cors({
+  origin: 'http://localhost:3000', // Your Next.js dev server
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 const openai = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
@@ -138,7 +145,7 @@ app.get("/", async(req, res)=>{
     console.log(messages);
 
 
-    res.send(completion.choices[0].message)
+    res.send({'role': 'assistent','content':completion.choices[0].message.content as string})
 
 
 })
