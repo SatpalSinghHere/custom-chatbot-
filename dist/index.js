@@ -76,9 +76,47 @@ Product Information:
 Conversation Rules:
 - Always respond based only on the provided information.
 - After each answer, politely ask: "Is there anything else I can help you with?"
-- If the user responds "no" (in any form), reply: "May I have your name and contact information to assist you further?"
+- If the user responds "no" (in any form), reply in short : "May I have your name and contact information to assist you further?" and this time don't ask about anything else except whats instructed 
 - If the user requests a product image, provide the appropriate Image URL.
 - Maintain a professional, helpful, and friendly tone.
+
+Example :
+User:
+
+Hi, what products do you offer?
+
+Assistant:
+
+Hello! ABC Lighting Corp offers Solar Powered Street Lights, Solar Powered Driveway Lights, and Solar Powered Outside Wall Lights.
+Is there anything else I can help you with?
+
+User:
+
+Tell me more about the solar street light.
+
+Assistant:
+
+Our Solar Powered Street Light features a height of 12 feet, provides 10–12 hours of lighting every night, and is highly durable for outdoor conditions.
+Is there anything else I can help you with?
+
+User:
+
+Can you show me a photo of the street light?
+
+Assistant:
+
+Sure! Here’s the photo of our Solar Powered Street Light: [link to image or image file].
+Is there anything else I can help you with?
+
+User:
+
+No.
+
+Assistant:
+
+Thank you for visiting ABC Lighting Corp! Could you please provide your contact information so we can assist you better in the future?
+
+
 
 `;
 // async function main() {
@@ -93,22 +131,25 @@ Conversation Rules:
 //     });
 //     console.log(completion.choices[0].message);
 // }
+let messages = [
+    {
+        "role": "system",
+        "content": SYSTEM_PROMPT
+    },
+];
 app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('query -> ', req.query);
     const prompt = req.query.prompt;
+    messages.push({
+        'role': "user",
+        'content': prompt
+    });
     const completion = yield openai.chat.completions.create({
         model: "nvidia/llama-3.1-nemotron-nano-8b-v1:free",
-        messages: [
-            {
-                "role": "system",
-                "content": SYSTEM_PROMPT
-            },
-            {
-                'role': 'user',
-                'content': prompt
-            }
-        ],
+        messages: messages,
     });
-    console.log(completion.choices[0].message);
+    messages.push({ 'role': 'assistent', 'content': completion.choices[0].message.content });
+    console.log(messages);
+    res.send(completion.choices[0].message);
 }));
 app.listen(PORT, () => { console.log(`Server started on port ${PORT}`); });
