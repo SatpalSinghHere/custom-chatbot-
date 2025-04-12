@@ -25,7 +25,7 @@ app.use(cors({
 }));
 const openai = new openai_1.default({
     baseURL: "https://openrouter.ai/api/v1",
-    apiKey: process.env.OPENROUTER_API_KEY,
+    apiKey: process.env.OPENROUTER_API_KEY2,
     defaultHeaders: {
     // "HTTP-Referer": "<YOUR_SITE_URL>", // Optional. Site URL for rankings on openrouter.ai.
     // "X-Title": "<YOUR_SITE_NAME>", // Optional. Site title for rankings on openrouter.ai.
@@ -135,6 +135,7 @@ app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     });
     const completion = yield openai.chat.completions.create({
         model: "nvidia/llama-3.1-nemotron-ultra-253b-v1:free",
+        // model: "deepseek/deepseek-v3-base:free",
         messages: messages,
     });
     let content = completion.choices[0].message.content;

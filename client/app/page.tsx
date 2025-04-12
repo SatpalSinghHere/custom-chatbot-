@@ -1,7 +1,8 @@
 'use client'
 
 import Navbar from '@/components/ui/Navbar'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { CSSProperties, useEffect, useRef, useState } from 'react'
+import { PulseLoader } from 'react-spinners'
 
 type MessageType = {
   role: 'user' | 'assistant' | 'system',
@@ -9,11 +10,16 @@ type MessageType = {
   images: string[] | null
 }
 
+const spinLoaderCSS: CSSProperties = {
+  display: "block",
+  margin: " auto",
+  borderColor: "red",
+};
+
 function Page() {
   const [text, setText] = useState('')
   const [messages, setMessages] = useState<MessageType[]>([
-    { role: "user", content: "What is your name? SJXkjsx KJS CKjas kJACS kjasKJA hat.Msc KSLC Lskc lKSC Lskc lksc", images: null },
-    { role: "assistant", content: "My name is this and that.Msc KSLC Lskc lKSC Lskc lksc hat.Msc KSLC Lskc lKSC Lskc lksc", images: null }
+    { role: "assistant", content: "Hello! I'm the customer service chatbot for ABC Lighting Corp, your go-to provider for innovative, energy-efficient solar lighting solutions. We specialize in outdoor lighting for residential and commercial spaces.  \nIs there anything else I can help you with?", images: null }
   ])
 
   function submitText() {
@@ -51,12 +57,6 @@ function Page() {
     })
   }, [messages])
 
-  const textbox = useRef<HTMLInputElement>(null)
-
-  textbox.current?.addEventListener('keydown',()=>{
-    submitText()
-  })
-
   return (
     <div className='flex flex-col items-center'>
       <Navbar />
@@ -74,10 +74,11 @@ function Page() {
           </div>
           )
         })}
+        {messages[messages.length-1].role === 'user' && <div className='p-2 flex'>🤖<PulseLoader color='black' /></div>}
       </div>
       <div className='w-[70vw] h-[15vh] flex items-center'>
         <input
-          ref={textbox}
+          onKeyDown={(e)=>{if(e.key === 'Enter')submitText()}}
           onChange={(e) => setText(e.target.value)}
           value={text}
           type="text"

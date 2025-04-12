@@ -1,0 +1,11 @@
+{
+  "name": "ai-chatbot-for-textanything",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cd server && npm run dev && cd ../client && npm run dev"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
